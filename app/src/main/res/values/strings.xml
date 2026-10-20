@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="app_name">pr_3kurs_5_1_romanov</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="welcome">Информация о книге</string>
+    <string name="loginText">Введите логин</string>
+    <string name="passwordText">Введите пароль</string>
+    <string name="enterText">Войти</string>
+    <string name="BookInputTab">Найти книгу</string>
+    <string name="enterId">Введите id или название книги</string>
+    <string name="SearchBtn">Поиск</string>
+</resources>

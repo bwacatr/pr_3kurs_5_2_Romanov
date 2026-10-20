@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".InputFragment"
+    android:background="@color/background">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textSize="30sp"
+        android:paddingTop="5dp"
+        android:background="@drawable/rectangle"
+        android:textScaleX="1"
+
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:text="@string/BookInputTab" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="350dp"
+        android:layout_height="100dp"
+        android:background="@drawable/rectanglewhite2"
+        android:layout_gravity="center">
+        <TextView
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/enterId"
+            android:textColor="@color/black"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            />
+
+        <EditText
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textColorHint="@color/black"
+            android:hint="@string/enterId"
+            android:background="@drawable/white_rectangle"
+            android:textAlignment="center"
+            android:id="@+id/themeEdit1"
+
+            />
+
+
+
+
+
+
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_width="match_parent"
+
+            android:layout_height="70dp"
+            android:textAlignment="center"
+            android:text="@string/SearchBtn"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/button_rectangle"
+            android:id="@+id/registerBtn"
+            android:onClick="handler"/>
+
+    </RelativeLayout>
+
+</FrameLayout>
+
+
