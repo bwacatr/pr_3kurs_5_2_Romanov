@@ -1,10 +1,19 @@
 package com.bignerdranch.android.pr_3kurs_5_1_romanov
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import com.android.volley.Request
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
+import org.json.JSONObject
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -17,6 +26,11 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class InputFragment : Fragment() {
+
+    lateinit var IdInput: EditText
+    lateinit var searchBtn: Button
+
+
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -35,6 +49,70 @@ class InputFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_input, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Находим кнопку по её ID из layout-файла
+        searchBtn = view.findViewById(R.id.SearchBtn)
+
+        // Обрабатываем нажатие
+        searchBtn.setOnClickListener {
+            // Действие при клике
+            getResult(view)
+        }
+    }
+
+
+    fun getResult(view: View) {
+        IdInput = view.findViewById(R.id.enterId)
+
+        val id = IdInput.text.toString()
+        if (id.isNotEmpty()) {
+
+            val url = "https://openlibrary.org/search.json?q=$id"
+
+            val queue = Volley.newRequestQueue(requireContext())
+            val stringRequest = StringRequest(
+                Request.Method.GET,
+                url,
+                { response ->
+                    try {
+                        val obj = JSONObject(response)
+
+                        val bookName = obj.getString("title")
+
+                        val authorName = obj.getJSONArray("author_name")
+
+                        val firstPublishYear = obj.getString("first_publish_year")
+
+
+
+
+
+
+
+
+                    } catch (e: Exception) {
+                        Log.d("MyLog", "JSON Parsing error: ${e.message}")
+
+                    }
+                },
+                {
+                    Log.d("MyLog", "Volley error: $it")
+
+                }
+            )
+            queue.add(stringRequest)
+        } else {
+            val alert = AlertDialog.Builder(requireContext())
+                .setTitle("Ошибка")
+                .setMessage("Введите город")
+                .setPositiveButton("OK", null)
+                .create()
+                .show()
+        }
     }
 
     companion object {
