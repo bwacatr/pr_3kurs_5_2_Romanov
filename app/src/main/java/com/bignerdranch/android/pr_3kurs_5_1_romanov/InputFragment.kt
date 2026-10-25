@@ -10,9 +10,13 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.lifecycleScope
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 
 // TODO: Rename parameter arguments, choose names that match
@@ -54,6 +58,8 @@ class InputFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+
         // Находим кнопку по её ID из layout-файла
         searchBtn = view.findViewById(R.id.SearchBtn)
 
@@ -66,10 +72,24 @@ class InputFragment : Fragment() {
 
 
     fun getResult(view: View) {
+        Dependencies.init(requireContext())
+
         IdInput = view.findViewById(R.id.enterId)
 
         val id = IdInput.text.toString()
-        if (id.isNotEmpty()) {
+
+        if (id.isEmpty())
+        {
+            val alert = AlertDialog.Builder(requireContext())
+                .setTitle("Ошибка")
+                .setMessage("Введите название книги или id")
+                .setPositiveButton("OK", null)
+                .create()
+                .show()
+            return
+        }
+
+
 
             val url = "https://openlibrary.org/search.json?q=$id"
 
@@ -78,25 +98,51 @@ class InputFragment : Fragment() {
                 Request.Method.GET,
                 url,
                 { response ->
-                    try {
-                        val obj = JSONObject(response)
+                    lifecycleScope.launch {
+                        try {
+                            val obj = JSONObject(response)
+                            val docs = obj.getJSONArray("docs")
 
-                        val bookName = obj.getString("title")
+                            if (docs == null || docs.length() == 0) {
+                                Log.d("MyLog", "Ничего не найдено по запросу: $id")
+                                return@launch
+                            }
 
-                        val authorName = obj.getJSONArray("author_name")
-
-                        val firstPublishYear = obj.getString("first_publish_year")
-
-
-
-
-
-
+                            // чистка таблицы
+                            Dependencies.bookRepository.getBooksOrderedByTitle()
+                                .forEach { Dependencies.bookRepository.deleteBook(it) }
+                            // сбрасывает счетчик Id
 
 
-                    } catch (e: Exception) {
-                        Log.d("MyLog", "JSON Parsing error: ${e.message}")
+                            //  выбирает, что меньше 10 или длина списка объектов docs
+                            val count = minOf(10, docs.length())
 
+                            for (i in 0..count) {
+                                val docsObj = docs.getJSONObject(i)
+
+                                val title = docsObj.getString("title")
+                                val series = docsObj.optString("series", "—")
+
+                                //берёт первого автора
+                                val author = docsObj.optJSONArray("author_name")
+                                    ?.optString(0)
+                                    ?: "Автор неизвестен"
+
+                                val book = Book(title, series, author)
+                                Dependencies.bookRepository.updateOrInsertBook(book)
+                            }
+
+                            Log.d("MyLog", "Сохранено книг: $count")
+
+                            // 3. Только теперь переходим на OutputFragment
+                            parentFragmentManager.beginTransaction()
+                                .replace(R.id.fragment_container_view, OutputFragment())
+                                .addToBackStack(InputFragment::class.java.simpleName)
+                                .commit()
+
+                        } catch (e: Exception) {
+                            Log.d("MyLog", "JSON Parsing error: ${e.message}")
+                        }
                     }
                 },
                 {
@@ -105,14 +151,18 @@ class InputFragment : Fragment() {
                 }
             )
             queue.add(stringRequest)
-        } else {
-            val alert = AlertDialog.Builder(requireContext())
-                .setTitle("Ошибка")
-                .setMessage("Введите город")
-                .setPositiveButton("OK", null)
-                .create()
-                .show()
-        }
+
+
+
+        val fragmentManager: FragmentManager = parentFragmentManager
+        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+
+
+        fragmentTransaction.replace(R.id.fragment_container_view, OutputFragment())
+        fragmentTransaction.addToBackStack(InputFragment.toString())
+        fragmentTransaction.commit()
+
+
     }
 
     companion object {
