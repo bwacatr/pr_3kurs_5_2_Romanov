@@ -121,7 +121,7 @@ class InputFragment : Fragment() {
                                 val docsObj = docs.getJSONObject(i)
 
                                 val title = docsObj.getString("title")
-                                val series = docsObj.optString("series", "—")
+                                val series = docsObj.optString("series_name", "—")
 
                                 //берёт первого автора
                                 val author = docsObj.optJSONArray("author_name")
