@@ -10,4 +10,10 @@
     <string name="BookInputTab">Найти книгу</string>
     <string name="enterId">Введите id или название книги</string>
     <string name="SearchBtn">Поиск</string>
+    <string name="enterTitle">Введите название книги</string>
+    <string name="enterSeries">Введите название цикла</string>
+    <string name="enterAuthor">Введите автора</string>
+    <string name="deleteBtn">Удалить книгу</string>
+    <string name="UpsertBtn">Добавить/Обновить книгу</string>
+    <string name="enterBookId">Введите ID книги</string>
 </resources>

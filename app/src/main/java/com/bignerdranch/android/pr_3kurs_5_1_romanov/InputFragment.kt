@@ -33,6 +33,7 @@ class InputFragment : Fragment() {
 
     lateinit var IdInput: EditText
     lateinit var searchBtn: Button
+    lateinit var nextBtn: Button
 
 
     // TODO: Rename and change types of parameters
@@ -58,7 +59,12 @@ class InputFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        nextBtn = view.findViewById(R.id.NextBtn)
 
+        nextBtn.setOnClickListener {
+            // Действие при клике
+           NextFragment(view)
+        }
 
         // Находим кнопку по её ID из layout-файла
         searchBtn = view.findViewById(R.id.SearchBtn)
@@ -70,7 +76,13 @@ class InputFragment : Fragment() {
         }
     }
 
-
+    fun NextFragment(view:View)
+    {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container_view, OutputFragment())
+            .addToBackStack(InputFragment::class.java.simpleName)
+            .commit()
+    }
     fun getResult(view: View) {
         Dependencies.init(requireContext())
 
@@ -134,7 +146,7 @@ class InputFragment : Fragment() {
 
                             Log.d("MyLog", "Сохранено книг: $count")
 
-                            // 3. Только теперь переходим на OutputFragment
+                            // переходим на OutputFragment
                             parentFragmentManager.beginTransaction()
                                 .replace(R.id.fragment_container_view, OutputFragment())
                                 .addToBackStack(InputFragment::class.java.simpleName)
@@ -154,13 +166,7 @@ class InputFragment : Fragment() {
 
 
 
-        val fragmentManager: FragmentManager = parentFragmentManager
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
 
-
-        fragmentTransaction.replace(R.id.fragment_container_view, OutputFragment())
-        fragmentTransaction.addToBackStack(InputFragment.toString())
-        fragmentTransaction.commit()
 
 
     }

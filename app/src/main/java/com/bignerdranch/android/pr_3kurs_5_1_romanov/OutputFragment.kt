@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,7 +23,11 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class OutputFragment : Fragment() {
+    lateinit var adapter :BookAdapter
     lateinit var recyclerView : RecyclerView
+
+    lateinit var deleteBtn : Button
+    lateinit var upsertBtn: Button
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -42,14 +48,18 @@ class OutputFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_output, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?)
+    {
         super.onViewCreated(view, savedInstanceState)
-
         Dependencies.init(requireContext())
+
+
+
+
         recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
 
         var books :List<Book> = emptyList()
-        val adapter = BookAdapter(mutableListOf())
+        adapter = BookAdapter(mutableListOf())
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
@@ -57,15 +67,42 @@ class OutputFragment : Fragment() {
             books = Dependencies.bookRepository.getBooksOrderedByTitle()
             adapter.useList(books)
 
-
-
         }
 
+        upsertBtn = view.findViewById(R.id.UpsertBtn)
 
+        // Обрабатываем нажатие
+        upsertBtn.setOnClickListener {
+            val bookId: Int = view.findViewById<EditText>(R.id.enterId).text.toString().toInt()
+            val bookTitle = view.findViewById<EditText>(R.id.enterTitle).text.toString()
+            val bookSeries = view.findViewById<EditText>(R.id.enterSeries).text.toString()
+            val bookAuthor = view.findViewById<EditText>(R.id.enterAuthor).text.toString()
 
+            val book = Book(bookTitle, bookSeries, bookAuthor, bookId)
+            lifecycleScope.launch {
+                Dependencies.bookRepository.updateOrInsertBook(book)
+                adapter.notifyDataSetChanged()
+
+            }
+
+            deleteBtn = view.findViewById(R.id.DeleteBtn)
+
+            // Обрабатываем нажатие
+            deleteBtn.setOnClickListener {
+                val bookId: Int = view.findViewById<EditText>(R.id.enterId).text.toString().toInt()
+
+                lifecycleScope.launch {
+                    Dependencies.bookRepository.deleteBookById(bookId)
+                    adapter.notifyDataSetChanged()
+                }
+
+            }
+
+        }
     }
 
-    companion object {
+    companion object
+    {
         /**
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.

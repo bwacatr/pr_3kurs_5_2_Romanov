@@ -23,6 +23,12 @@ class BookRepository(private val bookDao: BookDao) {
         }
     }
 
+    suspend fun deleteBookById(id: Int) {
+        withContext(Dispatchers.IO) {
+            bookDao.deleteBookById(id)
+        }
+    }
+
     suspend fun resetIdCounter() {
         withContext(Dispatchers.IO) {
             bookDao.resetIdCounter()

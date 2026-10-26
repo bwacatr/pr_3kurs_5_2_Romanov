@@ -1,9 +1,14 @@
 package com.bignerdranch.android.pr_3kurs_5_1_romanov
 
+import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.Text
@@ -31,6 +36,11 @@ class BookAdapter(
     {
 
 
+
+        holder.itemView.findViewById<TextView>(R.id.id).apply {
+            text = books[position].id.toString()
+        }
+
         holder.itemView.findViewById<TextView>(R.id.title).apply {
             text = books[position].title
         }
@@ -43,6 +53,8 @@ class BookAdapter(
             text = books[position].author
         }
     }
+
+
 
     override fun getItemCount(): Int {
         return books.size

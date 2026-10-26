@@ -15,6 +15,9 @@ interface BookDao {
     @Delete
     fun deleteBook(book: Book)
 
+    @Query("DELETE FROM book WHERE id = :id")
+    fun deleteBookById(id : Int)
+
     @Query("SELECT * FROM book ORDER BY title ASC")
     fun getBooksOrderedByTitle(): List<Book>
 
