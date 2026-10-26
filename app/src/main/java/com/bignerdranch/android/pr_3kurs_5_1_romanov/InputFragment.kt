@@ -121,9 +121,11 @@ class InputFragment : Fragment() {
                             }
 
                             // чистка таблицы
-                            Dependencies.bookRepository.getBooksOrderedByTitle()
+                            Dependencies.bookRepository.getBooks()
                                 .forEach { Dependencies.bookRepository.deleteBook(it) }
-                            // сбрасывает счетчик Id
+
+
+
 
 
                             //  выбирает, что меньше 10 или длина списка объектов docs
@@ -136,15 +138,13 @@ class InputFragment : Fragment() {
                                 val series = docsObj.optString("series_name", "—")
 
                                 //берёт первого автора
-                                val author = docsObj.optJSONArray("author_name")
-                                    ?.optString(0)
-                                    ?: "Автор неизвестен"
+                                val author = docsObj.optJSONArray("author_name")?.optString(0) ?: "Автор неизвестен"
 
                                 val book = Book(title, series, author)
                                 Dependencies.bookRepository.updateOrInsertBook(book)
                             }
 
-                            Log.d("MyLog", "Сохранено книг: $count")
+                            Log.d("MyLog", "Сохранено книг:$count")
 
                             // переходим на OutputFragment
                             parentFragmentManager.beginTransaction()

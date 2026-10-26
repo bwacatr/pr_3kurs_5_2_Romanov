@@ -11,9 +11,9 @@ class BookRepository(private val bookDao: BookDao) {
         }
     }
 
-    suspend fun getBooksOrderedByTitle() : List<Book> {
+    suspend fun getBooks() : List<Book> {
         return withContext(Dispatchers.IO) {
-            return@withContext bookDao.getBooksOrderedByTitle()
+            return@withContext bookDao.getBooks()
         }
     }
 

@@ -17,7 +17,15 @@ abstract class BookDatabase: RoomDatabase() {
 
 
 object Dependencies {
+
+
     private lateinit var applicationContext: Context
+
+    fun resetBookAutoIncrement() {
+
+        bookDatabase.openHelper.writableDatabase
+            .execSQL("DELETE FROM sqlite_sequence WHERE name = 'book'")
+    }
 
     fun init(context: Context) {
         applicationContext = context

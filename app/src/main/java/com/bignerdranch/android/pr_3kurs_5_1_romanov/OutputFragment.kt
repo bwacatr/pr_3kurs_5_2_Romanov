@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -64,7 +65,7 @@ class OutputFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         lifecycleScope.launch{
-            books = Dependencies.bookRepository.getBooksOrderedByTitle()
+            books = Dependencies.bookRepository.getBooks()
             adapter.useList(books)
 
         }
@@ -73,29 +74,57 @@ class OutputFragment : Fragment() {
 
         // Обрабатываем нажатие
         upsertBtn.setOnClickListener {
+
+            if (view.findViewById<EditText>(R.id.enterId).text.toString().isBlank() || view.findViewById<EditText>(R.id.enterTitle).text.toString().isBlank() || view.findViewById<EditText>(R.id.enterSeries).text.toString().isBlank() || view.findViewById<EditText>(R.id.enterAuthor).text.toString().isBlank())
+            {
+                val alert = AlertDialog.Builder(requireContext())
+                    .setTitle("Ошибка")
+                    .setMessage("Заполните все поля")
+                    .setPositiveButton("OK", null)
+                    .create()
+                    .show()
+                return@setOnClickListener
+            }
+
             val bookId: Int = view.findViewById<EditText>(R.id.enterId).text.toString().toInt()
             val bookTitle = view.findViewById<EditText>(R.id.enterTitle).text.toString()
             val bookSeries = view.findViewById<EditText>(R.id.enterSeries).text.toString()
             val bookAuthor = view.findViewById<EditText>(R.id.enterAuthor).text.toString()
 
+
+
             val book = Book(bookTitle, bookSeries, bookAuthor, bookId)
             lifecycleScope.launch {
                 Dependencies.bookRepository.updateOrInsertBook(book)
+                adapter.useList(Dependencies.bookRepository.getBooks())
                 adapter.notifyDataSetChanged()
 
             }
 
-            deleteBtn = view.findViewById(R.id.DeleteBtn)
+        }
 
-            // Обрабатываем нажатие
-            deleteBtn.setOnClickListener {
-                val bookId: Int = view.findViewById<EditText>(R.id.enterId).text.toString().toInt()
+        deleteBtn = view.findViewById(R.id.DeleteBtn)
 
-                lifecycleScope.launch {
-                    Dependencies.bookRepository.deleteBookById(bookId)
-                    adapter.notifyDataSetChanged()
-                }
+        // Обрабатываем нажатие
+        deleteBtn.setOnClickListener {
+            if (  view.findViewById<EditText>(R.id.enterId).text.toString().isBlank()  )
+            {
+                val alert = AlertDialog.Builder(requireContext())
+                    .setTitle("Ошибка")
+                    .setMessage("Введите id")
+                    .setPositiveButton("OK", null)
+                    .create()
+                    .show()
+                return@setOnClickListener
+            }
+            val bookId: Int = view.findViewById<EditText>(R.id.enterId).text.toString().toInt()
 
+
+
+            lifecycleScope.launch {
+                Dependencies.bookRepository.deleteBookById(bookId)
+                adapter.useList(Dependencies.bookRepository.getBooks())
+                adapter.notifyDataSetChanged()
             }
 
         }

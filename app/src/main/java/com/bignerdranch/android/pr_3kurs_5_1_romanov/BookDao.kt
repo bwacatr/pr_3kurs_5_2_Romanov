@@ -18,15 +18,10 @@ interface BookDao {
     @Query("DELETE FROM book WHERE id = :id")
     fun deleteBookById(id : Int)
 
-    @Query("SELECT * FROM book ORDER BY title ASC")
-    fun getBooksOrderedByTitle(): List<Book>
+    @Query("SELECT * FROM book")
+    fun getBooks(): List<Book>
 
-    @Query("SELECT * FROM book ORDER BY series ASC")
-    fun getBooksOrderedBySeries(): List<Book>
 
-    @Query("SELECT * FROM book ORDER BY author ASC")
-    fun getBooksOrderedByAuthor(): List<Book>
-
-    @Query("Delete FROM sqlite_sequence where 'book'")
+    @Query("Delete FROM sqlite_sequence where name = 'book'")
     fun resetIdCounter()
 }
