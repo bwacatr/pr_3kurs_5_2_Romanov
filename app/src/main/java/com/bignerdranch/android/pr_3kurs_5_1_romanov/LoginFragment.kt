@@ -178,7 +178,7 @@ class LoginFragment : Fragment() {
         {
             val alert = AlertDialog.Builder(requireContext())
                 .setTitle("Ошибка")
-                .setMessage("Введите правильный логин и пароль")
+                .setMessage("Введите правильный логин или пароль")
                 .setPositiveButton("OK",null)
                 .create()
                 .show()
